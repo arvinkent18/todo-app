@@ -1,9 +1,11 @@
 import { ConflictException, InternalServerErrorException, Logger } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
+import * as bcrypt from 'bcrypt';
 import CreateUserDto from "./dto/create-user.dto";
 import User from "./user.entity";
-import * as bcrypt from 'bcrypt'
 
+
+@EntityRepository(User)
 export default class UserRepository extends Repository<User> {
     private logger = new Logger('UserRepository');
 

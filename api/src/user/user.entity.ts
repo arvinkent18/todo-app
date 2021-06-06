@@ -1,8 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 
+@Unique(['email'])
+@Entity()
 export default class User extends BaseEntity {
     @ApiProperty()
     @PrimaryGeneratedColumn()

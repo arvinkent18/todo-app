@@ -14,10 +14,6 @@ export default class User extends BaseEntity {
 
     @ApiProperty()
     @Column()
-    name: string;
-
-    @ApiProperty()
-    @Column()
     password: string;
 
     @ApiProperty()

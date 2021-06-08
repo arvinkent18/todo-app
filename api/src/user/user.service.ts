@@ -11,7 +11,7 @@ export default class UserService {
         private readonly userRepository: UserRepository,
     ) { }
 
- /**
+  /**
    * Create a user
    * @param {CreateUserDto} userDetails  The user's details
    * @returns {Promise<User>} User Entity

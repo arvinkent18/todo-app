@@ -7,6 +7,13 @@ import UserService from './user.service';
 export default class UserController {
     constructor(private readonly userService: UserService) {}
 
+  /**
+   * Create a user
+   *
+   * @body {CreateUserDto} userDetails  The user's details
+   * @returns {Promise<User>} User Entity
+   * @public
+   */
     @Post('register')
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({

@@ -48,6 +48,7 @@ export default class UserRepository extends Repository<User> {
 
     /**
      * Hash password
+     * 
      * @param {string} password  The user's password
      * @param {string} salt  The user's salt
      * @returns {Promise<string>} Hashed Password

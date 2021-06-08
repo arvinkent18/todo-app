@@ -1,13 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import UserController from './user.controller';
+import UserService from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
 
+  const mockUserService = {
+    createUser: jest.fn(createUserDto => {
+      return {
+        ...createUserDto,
+      }
+    })
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-    }).compile();
+      providers: [UserService],
+    })
+      .overrideProvider(UserService)
+      .useValue(mockUserService)
+      .compile();
 
     controller = module.get<UserController>(UserController);
   });

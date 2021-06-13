@@ -1,25 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import CreateUserDto from './dto/create-user.dto';
-import UpdateUserDto from './dto/update-user.dto';
 import User from './user.entity';
 import UserService from './user.service';
 
 describe('SampleService', () => {
   let userService: UserService;
 
+  const mockCreateUser = {
+    email: 'arvinkent121816@gmail.com',
+    password: 'test-password',
+    name: 'Arvin Kent Lazaga', 
+  };
+
+  const mockUpdateUser= {
+    id: "1",
+    password: 'test-password',
+    name: 'Arvin Kent Lazaga',
+  }
+
   const mockUserRepository = {
-    createUser: jest.fn((dto: CreateUserDto) => {
-      return {
-        ...dto,
-      }
-    }),
-    updateUser: jest.fn((id: string, dto: UpdateUserDto) => {
-      return {
-        id,
-        ...dto,
-      }
-    })
+    createUser: jest.fn().mockResolvedValue(mockCreateUser),
+    updateUser: jest.fn().mockResolvedValue(mockUpdateUser),
   };
 
   beforeEach(async () => {
@@ -39,29 +40,20 @@ describe('SampleService', () => {
   });
 
   it('it should create a user', async () => {
-    const userDto: CreateUserDto = {
-      email: 'arvinkent121816@gmail.com',
-      password: 'test-password',
-      name: 'Arvin Kent Lazaga',
-    };
-    expect(await userService.createUser(userDto))
+    expect(await userService.createUser(mockCreateUser))
       .toEqual({
-        email: userDto.email,
-        password: userDto.password,
-        name: userDto.name,
+        email: mockCreateUser.email,
+        password: mockCreateUser.password,
+        name: mockCreateUser.name,
       })
   });
 
   it('should update a user', async () => {
-    const userDto: UpdateUserDto = {
-      password: 'test-password',
-      name: 'Arvin Kent Lazaga',
-    };
-    expect(await userService.updateUser("1", userDto))
+    expect(await userService.updateUser("1", mockUpdateUser))
       .toEqual({
         id: "1",
-        password: userDto.password,
-        name: userDto.name,
+        password: mockUpdateUser.password,
+        name: mockUpdateUser.name,
       })
   })
 });

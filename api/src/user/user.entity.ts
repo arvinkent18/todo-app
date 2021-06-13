@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 export default class User extends BaseEntity {
     @ApiProperty()
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @ApiProperty()
     @Column()

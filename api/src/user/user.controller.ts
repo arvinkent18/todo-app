@@ -51,7 +51,7 @@ export default class UserController {
     })
     @ApiParam({ name: 'id', type: 'string', required: true })
     @ApiBody({ type: UpdateUserDto })
-    public async updateUser(@Param('id') userId, @Body(ValidationPipe) userDetails: UpdateUserDto): Promise<User> {
+    public async updateUser(@Param('id') userId: string, @Body(ValidationPipe) userDetails: UpdateUserDto): Promise<User> {
       return this.userService.updateUser(userId, userDetails);
     }
 }

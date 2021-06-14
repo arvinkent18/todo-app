@@ -12,6 +12,14 @@ export default class UserService {
         private readonly userRepository: UserRepository,
     ) { }
 
+    public async getAllUsers(): Promise<User[]> {
+      return this.userRepository.getAllUsers();
+    }
+
+    public async getUserById(userId: string): Promise<User> {
+      return this.userRepository.getUserById(userId);
+    }
+
    /**
     * Create a user
     * 
@@ -33,5 +41,9 @@ export default class UserService {
      */
     public async updateUser(userId: string, userDetails: UpdateUserDto): Promise<User> {
         return this.userRepository.updateUser(userId, userDetails);
+    }
+
+    public async deleteUser(userId: string): Promise<User> {
+      return this.userRepository.deleteUser(userId);
     }
 }

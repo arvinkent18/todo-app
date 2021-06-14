@@ -8,9 +8,23 @@ import UpdateUserDto from "./dto/update-user.dto";
 
 @EntityRepository(User)
 export default class UserRepository extends Repository<User> {
-    private logger = new Logger('UserRepository');
+    private logger = new Logger('UserRepository');  
 
-  /**
+    public async getAllUsers(): Promise<User[]> {
+      return await this.find({ select: ['name', 'email', 'createdAt', 'updatedAt']});      
+    }
+
+    public async getUserById(userId: string): Promise<User> {
+      const user = this.findOneOrFail(userId, { select: ['id', 'name', 'email', 'createdAt', 'updatedAt']});
+      
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      return user;
+    }
+        
+   /**
     * Create a user
     * 
     * @param {CreateUserDto} userDetails  The user's details
@@ -81,6 +95,15 @@ export default class UserRepository extends Repository<User> {
         } else {
             throw new NotFoundException('User not found');
         }
+    }
+
+    public async deleteUser(userId: string): Promise<User> {
+      const user = await this.getUserById(userId);
+      
+      if (user) {
+        await this.remove(user);
+        return user;
+      }
     }
 
     /**

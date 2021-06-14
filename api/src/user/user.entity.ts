@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 
 import * as bcrypt from 'bcrypt';
 
@@ -26,9 +26,11 @@ export default class User extends BaseEntity {
     @Column()
     salt: string;
 
-    @Column({ type: 'timestamp' })
-    @CreateDateColumn()
-    public dateCreated?: Date;
+    @CreateDateColumn({ type: 'timestamp' })
+    public createdAt?: Date;
+
+    @UpdateDateColumn({ type: 'timestamp' })
+    public updatedAt?: Date;
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt);

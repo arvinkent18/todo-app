@@ -9,16 +9,16 @@ describe('UserController', () => {
 
   const mockUserService = {
     createUser: jest.fn((dto: CreateUserDto) => {
-      return { 
-        ...dto 
-      }
+      return {
+        ...dto,
+      };
     }),
     updateUser: jest.fn((id: string, dto: UpdateUserDto) => {
       return {
         id,
         ...dto,
-      }
-    })
+      };
+    }),
   };
 
   beforeEach(async () => {
@@ -43,12 +43,11 @@ describe('UserController', () => {
       password: 'test-password',
       name: 'Arvin Kent Lazaga',
     };
-    expect(await userController.createUser(userDto))
-      .toEqual({
-        email: userDto.email,
-        password: userDto.password,
-        name: userDto.name,
-      })
+    expect(await userController.createUser(userDto)).toEqual({
+      email: userDto.email,
+      password: userDto.password,
+      name: userDto.name,
+    });
   });
 
   it('should update a user', async () => {
@@ -56,11 +55,10 @@ describe('UserController', () => {
       password: 'test-password',
       name: 'Arvin Kent Lazaga',
     };
-    expect(await userController.updateUser("1", userDto))
-      .toEqual({
-        id: "1",
-        password: userDto.password,
-        name: userDto.name,
-      })
-  })
+    expect(await userController.updateUser(1, userDto)).toEqual({
+      id: '1',
+      password: userDto.password,
+      name: userDto.name,
+    });
+  });
 });

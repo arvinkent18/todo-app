@@ -1,40 +1,59 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  BaseEntity,
+  BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
+import Task from '../task/task.entity';
 
 @Unique(['email'])
 @Entity()
 export default class User extends BaseEntity {
-    @ApiProperty()
-    @PrimaryGeneratedColumn()
-    id: string;
+  @ApiProperty()
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
 
-    @ApiProperty()
-    @Column()
-    email: string;
+  @ApiProperty()
+  @Column()
+  email: string;
 
-    @ApiProperty()
-    @Column()
-    name: string;
+  @ApiProperty()
+  @Column()
+  name: string;
 
-    @ApiProperty()
-    @Column()
-    password: string;
+  @ApiProperty()
+  @Column()
+  password: string;
 
-    @ApiProperty()
-    @Column()
-    salt: string;
+  @ApiProperty()
+  @Column()
+  salt: string;
 
-    @CreateDateColumn({ type: 'timestamp' })
-    public createdAt?: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  public createdAt?: Date;
 
-    @UpdateDateColumn({ type: 'timestamp' })
-    public updatedAt?: Date;
+  @UpdateDateColumn({ type: 'timestamp' })
+  public updatedAt?: Date;
 
-    async validatePassword(password: string): Promise<boolean> {
-        const hash = await bcrypt.hash(password, this.salt);
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+  }
 
-        return hash === this.password;
-    }
+  @OneToMany((type) => Task, (task) => task.user, { eager: true })
+  tasks: Task[];
+
+  async validatePassword(password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, this.salt);
+
+    return hash === this.password;
+  }
 }

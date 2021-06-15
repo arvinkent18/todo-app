@@ -7,43 +7,60 @@ import UserRepository from './user.repository';
 
 @Injectable()
 export default class UserService {
-    constructor(
-        @InjectRepository(UserRepository)
-        private readonly userRepository: UserRepository,
-    ) { }
+  constructor(
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
+  ) {}
 
-    public async getAllUsers(): Promise<User[]> {
-      return this.userRepository.getAllUsers();
-    }
+  /**
+   * @description Get all users
+   * @public
+   * @returns {Promise<User[]>} User Entity
+   */
+  public async getUsers(): Promise<User[]> {
+    return this.userRepository.getUsers();
+  }
+  
+  /**
+   * @description Get a user
+   * @param userId  The user's ID
+   * @public
+   * @returns {Promise<User>} User Entity
+   */
+  public async getUserById(userId: number): Promise<User> {
+    return this.userRepository.getUserById(userId);
+  }
 
-    public async getUserById(userId: string): Promise<User> {
-      return this.userRepository.getUserById(userId);
-    }
+  /**
+   * @description Create a user
+   * @param {CreateUserDto} userDetails  The user's details
+   * @returns {Promise<User>} User Entity
+   * @public
+   */
+  public async createUser(userDetails: CreateUserDto): Promise<User> {
+    return this.userRepository.createUser(userDetails);
+  }
 
-   /**
-    * Create a user
-    * 
-    * @param {CreateUserDto} userDetails  The user's details
-    * @returns {Promise<User>} User Entity
-    * @public
-    */
-    public async createUser(userDetails: CreateUserDto): Promise<User> {
-        return this.userRepository.createUser(userDetails);
-    }
-    
-    /**
-     * Update a user's information
-     * 
-     * @param userId  The user's ID
-     * @param userDetails  The user's information
-     * @returns {Promise<User>} User Entity
-     * @public
-     */
-    public async updateUser(userId: string, userDetails: UpdateUserDto): Promise<User> {
-        return this.userRepository.updateUser(userId, userDetails);
-    }
+  /**
+   * @description Update a user's information
+   * @param userId  The user's ID
+   * @param userDetails  The user's information
+   * @returns {Promise<User>} User Entity
+   * @public
+   */
+  public async updateUser(
+    userId: number,
+    userDetails: UpdateUserDto,
+  ): Promise<User> {
+    return this.userRepository.updateUser(userId, userDetails);
+  }
 
-    public async deleteUser(userId: string): Promise<User> {
-      return this.userRepository.deleteUser(userId);
-    }
+  /**
+   * @description Delete a user
+   * @param userId  The user's ID
+   * @public
+   */
+  public async deleteUser(userId: number): Promise<void> {
+    return this.userRepository.deleteUser(userId);
+  }
 }

@@ -9,14 +9,14 @@ describe('SampleService', () => {
   const mockCreateUser = {
     email: 'arvinkent121816@gmail.com',
     password: 'test-password',
-    name: 'Arvin Kent Lazaga', 
+    name: 'Arvin Kent Lazaga',
   };
 
-  const mockUpdateUser= {
-    id: "1",
+  const mockUpdateUser = {
+    id: 1,
     password: 'test-password',
     name: 'Arvin Kent Lazaga',
-  }
+  };
 
   const mockUserRepository = {
     createUser: jest.fn().mockResolvedValue(mockCreateUser),
@@ -25,11 +25,13 @@ describe('SampleService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, 
-      {
-        provide: getRepositoryToken(User),
-        useValue: mockUserRepository,
-      }],
+      providers: [
+        UserService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: mockUserRepository,
+        },
+      ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
@@ -40,20 +42,18 @@ describe('SampleService', () => {
   });
 
   it('it should create a user', async () => {
-    expect(await userService.createUser(mockCreateUser))
-      .toEqual({
-        email: mockCreateUser.email,
-        password: mockCreateUser.password,
-        name: mockCreateUser.name,
-      })
+    expect(await userService.createUser(mockCreateUser)).toEqual({
+      email: mockCreateUser.email,
+      password: mockCreateUser.password,
+      name: mockCreateUser.name,
+    });
   });
 
   it('should update a user', async () => {
-    expect(await userService.updateUser("1", mockUpdateUser))
-      .toEqual({
-        id: "1",
-        password: mockUpdateUser.password,
-        name: mockUpdateUser.name,
-      })
-  })
+    expect(await userService.updateUser(1, mockUpdateUser)).toEqual({
+      id: 1,
+      password: mockUpdateUser.password,
+      name: mockUpdateUser.name,
+    });
+  });
 });

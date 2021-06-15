@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import UserModule from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       })
     }),
     UserModule,
+    TaskModule,
   ],
   providers: [],
 })

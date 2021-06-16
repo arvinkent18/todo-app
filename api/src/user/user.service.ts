@@ -23,7 +23,7 @@ export default class UserService {
   
   /**
    * @description Get a user
-   * @param userId  The user's ID
+   * @param {int} userId  The user's ID
    * @public
    * @returns {Promise<User>} User Entity
    */
@@ -32,10 +32,20 @@ export default class UserService {
   }
 
   /**
+   * @description Get a user information by Email
+   * @param {string} email  The user's email
+   * @public
+   * @returns {Promise<User>} User Entity
+   */
+  public getUserByEmail(email: string): Promise<User> {
+    return this.userRepository.getUserByEmail(email);
+  }
+
+  /**
    * @description Create a user
    * @param {CreateUserDto} userDetails  The user's details
-   * @returns {Promise<User>} User Entity
    * @public
+   * @returns {Promise<User>} User Entity
    */
   public async createUser(userDetails: CreateUserDto): Promise<User> {
     return this.userRepository.createUser(userDetails);
@@ -43,10 +53,10 @@ export default class UserService {
 
   /**
    * @description Update a user's information
-   * @param userId  The user's ID
-   * @param userDetails  The user's information
-   * @returns {Promise<User>} User Entity
+   * @param {int} userId  The user's ID
+   * @param {UpdateUserDto} userDetails  The user's information
    * @public
+   * @returns {Promise<User>} User Entity
    */
   public async updateUser(
     userId: number,
@@ -57,7 +67,7 @@ export default class UserService {
 
   /**
    * @description Delete a user
-   * @param userId  The user's ID
+   * @param {int} userId  The user's ID
    * @public
    */
   public async deleteUser(userId: number): Promise<void> {

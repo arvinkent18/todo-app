@@ -9,15 +9,16 @@ import {
   Param,
   Post,
   Put,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
+  ApiInternalServerErrorResponse,
   ApiNoContentResponse,
   ApiOperation,
   ApiParam,
-  ApiResponse,
+  ApiResponse
 } from '@nestjs/swagger';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
@@ -53,7 +54,7 @@ export default class UserController {
 
   /**
    * @description Get user details
-   * @param userId  The user's ID
+   * @param {int} userId  The user's ID
    * @public
    * @returns {Promise<User>} User Entity
    */
@@ -89,6 +90,10 @@ export default class UserController {
     description: 'Successfully created a User',
   })
   @ApiBody({ type: CreateUserDto })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   public async createUser(
     @Body(ValidationPipe) userDetails: CreateUserDto,
   ): Promise<User> {
@@ -99,8 +104,8 @@ export default class UserController {
 
   /**
    * @description Update a user's information
-   * @param userId  The user's ID
-   * @param userDetails  The user's information
+   * @param {int} userId  The user's ID
+   * @param {string} userDetails  The user's information
    * @public
    * @returns {Promise<User>} User Entity
    */
@@ -116,6 +121,10 @@ export default class UserController {
   })
   @ApiParam({ name: 'id', type: 'string', required: true })
   @ApiBody({ type: UpdateUserDto })
+  @ApiInternalServerErrorResponse({
+    status: 500,
+    description: 'Internal Server Error',
+  })
   public async updateUser(
     @Param('id') userId: number,
     @Body(ValidationPipe) userDetails: UpdateUserDto,
@@ -127,7 +136,7 @@ export default class UserController {
 
   /**
    * @description Delete a user
-   * @param userId  The user's ID
+   * @param {string} userId  The user's ID
    * @public
    */
   @Delete(':id')

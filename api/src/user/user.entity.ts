@@ -37,6 +37,10 @@ export default class User extends BaseEntity {
   @Column()
   salt: string;
 
+  @ApiProperty()
+  @Column({ default: false })
+  isActive: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt?: Date;
 
@@ -51,6 +55,11 @@ export default class User extends BaseEntity {
   @OneToMany((type) => Task, (task) => task.user, { eager: true })
   tasks: Task[];
 
+  /**
+   * @description Validate the users password
+   * @param {string} password  The user's password
+   * @returns {Promise<boolean>} 
+   */
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
 

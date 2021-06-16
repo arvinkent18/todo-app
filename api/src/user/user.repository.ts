@@ -4,11 +4,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { EntityRepository, Repository } from 'typeorm';
 import CreateUserDto from './dto/create-user.dto';
-import User from './user.entity';
 import UpdateUserDto from './dto/update-user.dto';
+import User from './user.entity';
 
 @EntityRepository(User)
 export default class UserRepository extends Repository<User> {
@@ -20,15 +20,17 @@ export default class UserRepository extends Repository<User> {
    * @returns {Promise<User[]} User Entity
    */
   public async getUsers(): Promise<User[]> {
-    return await this.find({
+    const users = await this.find({
       select: ['name', 'email', 'createdAt', 'updatedAt'],
       relations: ['tasks'],
     });
+
+    return users;
   }
 
   /**
    * @description Get a user
-   * @param userId  The user's ID
+   * @param {int} userId  The user's ID
    * @throws {NotFoundException}
    * @public
    * @returns {Promise<User>} User Entity
@@ -40,6 +42,23 @@ export default class UserRepository extends Repository<User> {
 
     if (!user) {
       this.logger.error(`Failed to get user with ID ${userId}`);
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  /**
+   * @description Get a user information by Email
+   * @param {string} email  The user's email
+   * @public
+   * @returns {Promise<User>} User Entity
+   */
+  public async getUserByEmail(email: string): Promise<User> {
+    const user = this.findOne({ email });
+
+    if (!user) {
+      this.logger.error(`Failed to get user with email ${email}`);
       throw new NotFoundException('User not found');
     }
 
@@ -79,15 +98,15 @@ export default class UserRepository extends Repository<User> {
       }
     }
   }
-  
+
   /**
    * @description Update a user information
-   * @param userId  The user's ID
-   * @param userDetails  The user's details
+   * @param {int} userId  The user's ID
+   * @param {UpdateUserDto} userDetails  The user's details
    * @throws {InternalServerErrorException}
    * @throws {NotFoundException}
-   * @returns {Promise<User>} User Entity
    * @public
+   * @returns {Promise<User>}  User Entity
    */
   public async updateUser(
     userId: number,
@@ -117,7 +136,7 @@ export default class UserRepository extends Repository<User> {
 
   /**
    * @description Delete a user
-   * @param userId  The user's ID
+   * @param {int} userId  The user's ID
    * @throws {NotFoundException}
    * @throws {InternalServerErrorException}
    * @public

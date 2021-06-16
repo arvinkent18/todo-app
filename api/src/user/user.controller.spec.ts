@@ -52,7 +52,7 @@ describe('UserController', () => {
       name: 'Arvin Kent Lazaga',
     };
     expect(await userController.updateUser(1, userDto)).toEqual({
-      id: '1',
+      id: 1,
       password: userDto.password,
       name: userDto.name,
     });

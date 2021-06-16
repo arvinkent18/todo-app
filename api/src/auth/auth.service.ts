@@ -1,26 +1,49 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import UserRepository from 'src/user/user.repository';
 import CreateUserDto from '../user/dto/create-user.dto';
-import UserService from '../user/user.service';
 import User from '../user/user.entity';
+import AuthCredentialsDto from './dto/auth-credentials.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  private logger = new Logger('AuthService');
+
+  constructor(
+    @InjectRepository(UserRepository)
+    private userRepository: UserRepository,
+  ) {}
 
   /**
-   * @description Register a user
-   * @param {CreateUserDto} userDetails  The user's details   
-   * @public 
+   * @description Sign Up a user
+   * @param {CreateUserDto} userDetails  The user's details
+   * @public
    * @returns {Promise<User} User Entity
    */
-  public async register(userDetails: CreateUserDto): Promise<User> {
-    const user = await this.userService.createUser(userDetails);
+  public async signUp(userDetails: CreateUserDto): Promise<User> {
+    const user = await this.userRepository.createUser(userDetails);
 
     if (!user) {
       throw new InternalServerErrorException();
     }
 
+    this.logger.verbose('User successfully sign up');
+
     return user;
+  }
+
+  /**
+   * @description Validate the user's credential
+   * @param {AuthCredentialsDto} authCredentialsDto  The user's credentials
+   * @public
+   * @returns {Promise<string>} Email
+   */
+  public async signIn(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+    return this.userRepository.validateUser(authCredentialsDto);
   }
 
   /**
@@ -30,9 +53,11 @@ export class AuthService {
    * @returns {Promise<User>} User Entity
    */
   public async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.userService.getUserByEmail(email);
+    const user = await this.userRepository.getUserByEmail(email);
 
     if (user && user.password === password) {
+      this.logger.verbose('User successfully sign in');
+
       return user;
     }
 

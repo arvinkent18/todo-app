@@ -3,8 +3,10 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import AuthCredentialsDto from 'src/auth/dto/auth-credentials.dto';
 import { EntityRepository, Repository } from 'typeorm';
 import CreateUserDto from './dto/create-user.dto';
 import UpdateUserDto from './dto/update-user.dto';
@@ -55,14 +57,39 @@ export default class UserRepository extends Repository<User> {
    * @returns {Promise<User>} User Entity
    */
   public async getUserByEmail(email: string): Promise<User> {
-    const user = this.findOne({ email });
+    const user = await this.findOne({ email });
 
     if (!user) {
       this.logger.error(`Failed to get user with email ${email}`);
       throw new NotFoundException('User not found');
     }
 
+    this.logger.verbose('User successfully fetched by Email');
+
     return user;
+  }
+
+  /**
+   * @description Validate user's credentials
+   * @param {AuthCredentialsDto} authCredentialsDto  The user's credentials
+   * @public
+   * @returns {string} email
+   */
+  public async validateUser(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<string> {
+    const { email, password } = authCredentialsDto;
+    const user = await this.getUserByEmail(email);
+
+    console.log(await user.validatePassword(password));
+
+    if (!user || !await user.validatePassword(password)) {
+      throw new UnauthorizedException();
+    }
+
+    this.logger.verbose('User successfully validated');
+
+    return user.email;
   }
 
   /**
@@ -86,7 +113,8 @@ export default class UserRepository extends Repository<User> {
       await user.save();
       delete user.password;
       delete user.salt;
-      this.logger.verbose('successfully registered user');
+
+      this.logger.verbose('User successfully sign up');
 
       return user;
     } catch (err) {
@@ -125,6 +153,8 @@ export default class UserRepository extends Repository<User> {
         await user.save();
         delete user.password;
 
+        this.logger.verbose('Successfully updated user');
+
         return user;
       } catch (err) {
         throw new InternalServerErrorException();
@@ -150,6 +180,8 @@ export default class UserRepository extends Repository<User> {
 
     try {
       const softRemoveUser = await this.delete(user);
+
+      this.logger.verbose('Successfully deleted user');
 
       if (softRemoveUser.affected === 0) {
         throw new NotFoundException(`User with ID ${userId} not found`);

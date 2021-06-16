@@ -31,8 +31,7 @@ describe('UserController (e2e)', () => {
     await app.init();
   });
 
-  it('/user/register (POST)', () => {
-    return request(app.getHttpServer())
+  it('/user/register (POST)', () => request(app.getHttpServer())
       .post('/user/register')
       .send(mockCreateUser)
       .expect('Content-Type', /json/)
@@ -43,6 +42,5 @@ describe('UserController (e2e)', () => {
           password: mockCreateUser.password,
           name: mockCreateUser.name,
         })
-      })
-  });
+      }));
 });

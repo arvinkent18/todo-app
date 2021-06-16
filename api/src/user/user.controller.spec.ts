@@ -8,17 +8,13 @@ describe('UserController', () => {
   let userController: UserController;
 
   const mockUserService = {
-    createUser: jest.fn((dto: CreateUserDto) => {
-      return {
+    createUser: jest.fn((dto: CreateUserDto) => ({
         ...dto,
-      };
-    }),
-    updateUser: jest.fn((id: string, dto: UpdateUserDto) => {
-      return {
+      })),
+    updateUser: jest.fn((id: string, dto: UpdateUserDto) => ({
         id,
         ...dto,
-      };
-    }),
+      })),
   };
 
   beforeEach(async () => {

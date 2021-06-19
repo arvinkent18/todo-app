@@ -12,6 +12,7 @@ import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiOperation,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import CreateUserDto from '../user/dto/create-user.dto';
 import User from '../user/user.entity';
@@ -24,6 +25,12 @@ export class AuthController {
 
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * @description Sign up a user
+   * @param {CreateUserDto}  userDetails  The user's details
+   * @public
+   * @returns {Promise<User} User Entity
+   */
   @Post('sign-up')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
@@ -51,9 +58,9 @@ export class AuthController {
    * @description Validate the user's credential
    * @param {AuthCredentialsDto} authCredentialsDto  The user's credentials
    * @public
-   * @returns {Promise<string>} Email
+   * @returns {Promise<{accessToken}>} Access Token
    */
-  @Post('/login')
+  @Post('/sign-in')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Sign in a user',
@@ -67,10 +74,14 @@ export class AuthController {
     status: 500,
     description: 'Internal Server Error',
   })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'Unauthorized User',
+  })
   @ApiBody({ type: AuthCredentialsDto })
   public async signIn(
     @Body(ValidationPipe) authCredentials: AuthCredentialsDto,
-  ): Promise<string> {
+  ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentials);
   }
 }

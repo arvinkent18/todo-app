@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import UserModule from './user/user.module';
 import { TaskModule } from './task/task.module';
-import { AuthModule } from './auth/auth.module';
+import AuthModule from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,8 +22,8 @@ import { AuthModule } from './auth/auth.module';
         synchronize: configService.get<boolean>('TYPEORM_SYNCHRONIZE'),
       }),
     }),
-    UserModule,
     AuthModule,
+    UserModule,
     TaskModule,
   ],
   providers: [],

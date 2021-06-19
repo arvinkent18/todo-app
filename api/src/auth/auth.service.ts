@@ -1,10 +1,12 @@
 import {
   Injectable,
   InternalServerErrorException,
-  Logger
+  Logger,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import UserRepository from 'src/user/user.repository';
+import { JwtPayload } from './jwt-payload.interface';
 import CreateUserDto from '../user/dto/create-user.dto';
 import User from '../user/user.entity';
 import AuthCredentialsDto from './dto/auth-credentials.dto';
@@ -16,6 +18,7 @@ export class AuthService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
+    private jwtService: JwtService,
   ) {}
 
   /**
@@ -40,27 +43,20 @@ export class AuthService {
    * @description Validate the user's credential
    * @param {AuthCredentialsDto} authCredentialsDto  The user's credentials
    * @public
-   * @returns {Promise<string>} Email
+   * @returns {Promise<{accessToken}>} Access Token
    */
-  public async signIn(authCredentialsDto: AuthCredentialsDto): Promise<string> {
-    return this.userRepository.validateUser(authCredentialsDto);
-  }
+  public async signIn(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
+    const email = await this.userRepository.validateUser(authCredentialsDto);
 
-  /**
-   * @description Validate a user
-   * @param {string} email  The user's email
-   * @public
-   * @returns {Promise<User>} User Entity
-   */
-  public async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.userRepository.getUserByEmail(email);
+    if (email) {
+      const payload: JwtPayload = { email };
+      const accessToken = await this.jwtService.sign(payload);
 
-    if (user && user.password === password) {
-      this.logger.verbose('User successfully sign in');
-
-      return user;
+      return { accessToken };
     }
 
-    return null;
+    return undefined;
   }
 }

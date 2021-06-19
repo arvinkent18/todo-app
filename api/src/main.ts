@@ -10,8 +10,12 @@ async function bootstrap() {
     .setTitle('TodoList API')
     .setDescription('API for TodoList Application')
     .setVersion('1.0')
-    .addTag('todo')
-    .build()
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+    })
+    .addBearerAuth()
+    .build();
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
@@ -22,9 +26,7 @@ async function bootstrap() {
     app.enableCors();
   } else {
     app.enableCors({
-      origin: [
-        'http:localhost:4200',
-      ],
+      origin: [`http:localhost:${port}`],
     });
   }
 

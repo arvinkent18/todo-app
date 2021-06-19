@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBody,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
@@ -79,7 +80,7 @@ export default class UserController {
    * @public
    * @returns {Promise<User>} User Entity
    */
-  @Post('register')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Create a user',
@@ -90,6 +91,10 @@ export default class UserController {
     description: 'Successfully created a User',
   })
   @ApiBody({ type: CreateUserDto })
+  @ApiConflictResponse({
+    status: 23505,
+    description: 'User already exist',
+  })
   @ApiInternalServerErrorResponse({
     status: 500,
     description: 'Internal Server Error',
